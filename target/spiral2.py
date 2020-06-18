@@ -4,6 +4,7 @@ from spiral import ArestaReta, GeometricForm, StopError
 points = list()
 last_points = list()
 geometric = list()
+list_points = list()
 
 
 def setup():
@@ -12,15 +13,19 @@ def setup():
     tax = 4
     createCanvas(1024, 1024)
     background(160)
-    frameRate(30)
+    # frameRate(30)
 
 
 def keyReleased():
     global geometric
     global points
     global last_points
+    global list_points
     if key == 'a':
-        desenha()
+        desenha(points)
+        list_points.append(points[:])
+        points = list()
+        # geometric = list()
         last_points = list()
     if key == 'z':
         size = len(last_points)
@@ -40,10 +45,10 @@ def keyReleased():
                  last_points[size - 1][0], last_points[size - 1][1])
             last_points.pop()
         points.pop()
-    if key == 'd':
-        geometric = list()
-        points = list()
-        last_points = list()
+    if key == 'r':
+        print(list_points)
+        for po in list_points:
+            desenha(po)
     if key == 's':
         geometric = list()
         points = list()
@@ -73,8 +78,7 @@ def mouseClicked():
              last_points[size - 1][0], last_points[size - 1][1])
 
 
-def desenha():
-    global points
+def desenha(points):
     global geometric
     minimal = 10
     tax = 4
