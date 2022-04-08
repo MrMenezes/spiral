@@ -1,5 +1,6 @@
 from pyp5js import *
 from core import ArestaReta, GeometricForm, StopError
+
 index = None
 points = list()
 last_points = list()

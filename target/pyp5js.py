@@ -1,4 +1,4 @@
-from pyp5js.python_functions import PythonFunctions
+from python_functions import PythonFunctions
 
 _P5_INSTANCE = None
 
@@ -192,7 +192,16 @@ def background(*args):
     return _P5_INSTANCE.background(*args)
 
 def clear(*args):
-    return _P5_INSTANCE.clear(*args)
+    __pragma__('noalias', 'clear')
+    p5_clear = _P5_INSTANCE.clear(*args)
+    __pragma__('alias', 'clear', 'py_clear')
+    return p5_clear
+
+def erase(*args):
+    return _P5_INSTANCE.erase(*args)
+
+def noErase(*args):
+    return _P5_INSTANCE.noErase(*args)
 
 def colorMode(*args):
     return _P5_INSTANCE.colorMode(*args)
@@ -539,8 +548,32 @@ def saveCanvas(*args):
 def saveFrames(*args):
     return _P5_INSTANCE.saveFrames(*args)
 
+
+def image_proxy(img):
+    """
+    Proxy to turn of transcypt when calling img.get/set methods
+    """
+
+    def _set(*args):
+        __pragma__('noalias', 'set')
+        value = img.set(*args)
+        __pragma__('alias', 'set', 'py_set')
+        return value
+
+    def _get(*args):
+        __pragma__('noalias', 'get')
+        value = img.get(*args)
+        __pragma__('alias', 'get', 'py_get')
+        return value
+
+    img.set = _set
+    img.get = _get
+    return img
+
+
 def loadImage(*args):
-    return _P5_INSTANCE.loadImage(*args)
+    imageObj = _P5_INSTANCE.loadImage(*args)
+    return image_proxy(imageObj)
 
 def image(*args):
     return _P5_INSTANCE.image(*args)
@@ -566,9 +599,11 @@ def filter(*args):
     else:
         return _P5_INSTANCE.filter(*args)
 
-
 def get(*args):
-    return _P5_INSTANCE.get(*args)
+    __pragma__('noalias', 'get')
+    p5_get = _P5_INSTANCE.get(*args)
+    __pragma__('alias', 'get', 'py_get')
+    return p5_get
 
 def loadPixels(*args):
     return _P5_INSTANCE.loadPixels(*args)
@@ -578,7 +613,6 @@ def set(*args):
         return PythonFunctions.set(*args)
     else:
         return _P5_INSTANCE.set(*args)
-
 
 def updatePixels(*args):
     return _P5_INSTANCE.updatePixels(*args)
@@ -938,6 +972,25 @@ popStyle = pop
 pushMatrix = push
 pushStyle = push
 
+# PVector is a helper/alias to create p5.Vector objects
+def PVector(x=0, y=0, z=0):
+    return _P5_INSTANCE.createVector(x, y, z)
+# aliases  for p5.Vector class methods
+setattr(PVector, 'dist', p5.Vector.dist)
+setattr(PVector, 'add', p5.Vector.add)
+setattr(PVector, 'sub', p5.Vector.sub)
+setattr(PVector, 'mult', p5.Vector.mult)
+setattr(PVector, 'div', p5.Vector.div)
+setattr(PVector, 'dot', p5.Vector.dot)
+setattr(PVector, 'cross', p5.Vector.cross)
+setattr(PVector, 'lerp', p5.Vector.lerp)
+setattr(PVector, 'random2D', p5.Vector.random2D)
+setattr(PVector, 'random3D', p5.Vector.random3D)
+setattr(PVector, 'angleBetween', p5.Vector.angleBetween)
+setattr(PVector, 'fromAngle', p5.Vector.fromAngle)
+setattr(PVector, 'fromAngles', p5.Vector.fromAngles)
+setattr(PVector, 'equals', p5.Vector.equals)
+
 def pre_draw(p5_instance, draw_func):
     """
     We need to run this before the actual draw to insert and update p5 env variables
@@ -1136,10 +1189,11 @@ def global_p5_injection(p5_sketch):
     return decorator
 
 
-def start_p5(setup_func, draw_func, event_functions):
+def start_p5(preload_func, setup_func, draw_func, event_functions):
     """
     This is the entrypoint function. It accepts 2 parameters:
 
+    - preload_func: a Python preload callable
     - setup_func: a Python setup callable
     - draw_func: a Python draw callable
     - event_functions: a config dict for the event functions in the format:
@@ -1149,6 +1203,7 @@ def start_p5(setup_func, draw_func, event_functions):
     """
 
     def sketch_setup(p5_sketch):
+        p5_sketch.preload = global_p5_injection(p5_sketch)(preload_func)
         p5_sketch.setup = global_p5_injection(p5_sketch)(setup_func)
         p5_sketch.draw = global_p5_injection(p5_sketch)(draw_func)
 
@@ -1161,7 +1216,7 @@ def start_p5(setup_func, draw_func, event_functions):
         "keyPressed", "keyReleased", "keyTyped",
         "mousePressed", "mouseReleased", "mouseClicked", "doubleClicked",
         "mouseMoved", "mouseDragged", "mouseWheel",
-        "touchStarted", "touchMoved", "touchEnded"
+        "touchStarted", "touchMoved", "touchEnded", "keyIsDown"
     )
 
     for f_name in [f for f in event_function_names if event_functions.get(f, None)]:
@@ -1175,12 +1230,10 @@ def logOnloaded():
 
 
 def add_library(lib_name):
+    # placeholder for https://github.com/berinhard/pyp5js/issues/31
     src = ''
 
-    if lib_name == 'p5.dom.js':
-        src = "static/p5.dom.js"
-    else:
-        return console.log("Lib name is not valid:", lib_name)
+    return console.log("Lib name is not valid:", lib_name)
 
     console.log("Importing:", src)
 
