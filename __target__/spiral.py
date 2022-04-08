@@ -1,5 +1,5 @@
 from pyp5js import *
-from spiral_base import ArestaReta, GeometricForm, StopError
+from core import ArestaReta, GeometricForm, StopError
 index = None
 points = list()
 last_points = list()
