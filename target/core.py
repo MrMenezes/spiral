@@ -10,7 +10,7 @@ class GeometricForm():
         self.__tax__ = tax
         self.points = points
         self.sub_geometric = list()
-
+    
     def newForm(self):
         arestas = list()
         x = self.arestas[len(self.arestas)-1].x2
@@ -39,6 +39,14 @@ class GeometricForm():
             dist = dist_t
         return GeometricForm(arestas,self.__minimal__,self.__tax__)
     
+    def export(self):
+        return {
+            "arestas": [a.export() for a in self.arestas],
+            "minimal": self.__minimal__,
+            "tax": self.__tax__,
+            "points": self.points
+            }
+
     def spiral(self):
         arestas = list()
         x = self.arestas[len(self.arestas)-1].x2
@@ -71,7 +79,7 @@ class GeometricForm():
 
 
 class ArestaReta:
-    def __init__(self, start, end, MINIMAL=10, tax=0.2, color='black', move_list=list(), starts=list()):
+    def __init__(self, start, end, MINIMAL=10, tax=0.2, color='BLACK', move_list=list(), starts=list()):
         self.x1 = start[0]
         self.y1 = start[1]
         self.movex = move_list[0]
@@ -103,6 +111,16 @@ class ArestaReta:
         y = self.y1 + ((self.y2-self.y1) * self.tax)
         # print("dist x: {} - y: {}".format(x, y))
         return (x, y)
+
+    def export(self):
+        return {
+            "start": (self.x1,self.y1),
+            "end": (self.endx, self.endy),
+            "minimal": self.__minimal__,
+            "tax": self.tax,
+            "color": self.color,
+            "move_list": (self.movex, self.movey),
+        }
         
     def dist_move(self):
         # print("Meio x1: {} - y1: {} - tax{}".format(self.x1, self.x2,self.tax))

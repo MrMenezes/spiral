@@ -1,3 +1,20 @@
+"""
+pyp5js
+Copyright (C) 2019-2021 Bernardo Fontes
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
 from pyp5js import *
 
 def preload():
@@ -38,12 +55,34 @@ last_points = list()
 geometric = list()
 geometrics = list()
 arestas = list()
+list_of_points = list()
+
+def load_points(my_points):
+    global points
+    global geometric
+    global geometrics
+    points = my_points
+    desenha()
+    geometrics.append(geometric)
+    geometric = list()
+    points = list()
 
 def setup():
     createCanvas(1024, 1024)
     background(160)
     frameRate(12)
 
+def save_points():
+    global geometrics
+    list_of_points = list()
+    for geometric in geometrics:
+        points = list()
+        for geo in geometric:
+            for aresta in geo.export()["arestas"]:
+                points.append(aresta.start)
+        list_of_points.append(points)
+
+    return list_of_points  
 
 def keyReleased():
     global geometric
@@ -52,7 +91,13 @@ def keyReleased():
     global last_points
     global index
     global arestas
-    
+    global list_of_points
+    if key == 'l':
+        for p in list_of_points:
+            load_points(p)
+    if key == 's':
+        s = save_points()
+        list_of_points = s
     if key == 'p':
         print(geometrics)
         print(arestas)
