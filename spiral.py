@@ -7,12 +7,34 @@ last_points = list()
 geometric = list()
 geometrics = list()
 arestas = list()
+list_of_points = list()
+
+def load_points(my_points):
+    global points
+    global geometric
+    global geometrics
+    points = my_points
+    desenha()
+    geometrics.append(geometric)
+    geometric = list()
+    points = list()
 
 def setup():
     createCanvas(1024, 1024)
     background(160)
     frameRate(12)
 
+def save_points():
+    global geometrics
+    list_of_points = list()
+    for geometric in geometrics:
+        points = list()
+        for geo in geometric:
+            for aresta in geo.export()["arestas"]:
+                points.append(aresta.start)
+        list_of_points.append(points)
+
+    return list_of_points  
 
 def keyReleased():
     global geometric
@@ -21,7 +43,13 @@ def keyReleased():
     global last_points
     global index
     global arestas
-    
+    global list_of_points
+    if key == 'l':
+        for p in list_of_points:
+            load_points(p)
+    if key == 's':
+        s = save_points()
+        list_of_points = s
     if key == 'p':
         print(geometrics)
         print(arestas)
