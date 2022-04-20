@@ -39,7 +39,7 @@ class GeometricForm():
             dist = dist_t
         return GeometricForm(arestas,self.__minimal__,self.__tax__)
     
-      def export(self):
+    def export(self):
         return {
             "arestas": [a.export() for a in self.arestas],
             "minimal": self.__minimal__,
