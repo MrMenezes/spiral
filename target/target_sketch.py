@@ -124,6 +124,7 @@ def roll_back():
     global arestas
     if len(last_points) > 0:
         last_points.pop()
+        points.pop()
     else:
         points.pop()
         geometrics.pop()

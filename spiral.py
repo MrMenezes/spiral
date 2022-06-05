@@ -62,7 +62,6 @@ def desenhar():
     global last_points
     background(0)
     desenha()
-    last_points = list()
     geometrics.append(geometric)
     geometric = list()
     points = list()
@@ -76,6 +75,7 @@ def roll_back():
     global arestas
     if len(last_points) > 0:
         last_points.pop()
+        points.pop()
     else:
         points.pop()
         geometrics.pop()
@@ -181,7 +181,7 @@ def desenha():
     except StopError:
         pass
     geometric.append(q1)
-    last_points = []
+    last_points = list()
 
 def stroke_custom(color):
     global color_picker
