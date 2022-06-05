@@ -1,21 +1,114 @@
 <!DOCTYPE html>
 
-<!-- pyp5js index.html boilerplate -->
+<!-- pyp5js index.html Spiral -->
 <html lang="">
-  <head>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spiral - pyp5js</title>
-    <style> body, html, canvas {padding: 0; margin: 0; overflow: hidden;} </style>
+<head>
 
-    <script src="static/p5/p5.min.js"></script>
-    <script src="target/target_sketch.js"  type="module"></script>
-  </head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>spiral - pyp5js</title>
+  <style>
+    body,
+    html {
+      margin: 0;
+      overflow: hidden;
+      background-color: #c5c5c59d;
+    }
 
-  <body>
-    <div id="sketch-holder">
-          <!-- You sketch will go here! -->
-    </div>
-  </body>
+    canvas {
+      margin: 0px 0px 0px 50px;
+    }
+  </style>
+  <style>
+    input[type="color" i] {
+      top: 0;
+      appearance: auto;
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      cursor: pointer;
+    }
+
+    input[type="file" i] {
+      position: absolute;
+      left: 0px;
+      top: 50px;
+      width: 36px;
+      height: 46px;
+      display: inline-block;
+      padding: 0px;
+      cursor: pointer;
+      border-radius: 5px;
+      border-width: 1px;
+      border-style: outset;
+      border-color: buttonborder;
+      border-image: initial;
+      padding: 1px 6px;
+      text-align: right;
+      opacity: 0;
+    }
+
+    button {
+      border-radius: 5px;
+      background-color: #efefef;
+      top: 100px;
+      cursor: pointer;
+      appearance: auto;
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      padding: 1px 6px;
+      border-width: 1px;
+      border-style: outset;
+      border-color: buttonborder;
+      border-image: initial;
+    }
+
+    img {
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+    }
+  </style>
+
+  <script src="static/p5/p5.min.js"></script>
+  <script src="target/target_sketch.js" type="module"></script>
+  <script type="module">
+    import { save_points, printar, desenhar, roll_back } from "./target/target_sketch.js";
+    document.getElementById('save').addEventListener('click', function (e) {
+      save_points()
+    });
+    document.getElementById('rollback').addEventListener('click', function (e) {
+      roll_back()
+    });
+    document.getElementById('printar').addEventListener('click', function (e) {
+      printar()
+    });
+    document.getElementById('desenhar').addEventListener('click', function (e) {
+      desenhar()
+    });
+  </script>
+</head>
+
+<body>
+  <button type="button" lass="hovertext" style="top: 50px;" data-hover="Clique em 'L' para carregar forma">
+    <img src="/static/img/file.png" />
+  </button>
+  <button id="desenhar" type="button" lass="hovertext" style="top: 100px;"
+    data-hover="Clique em 'D' para desenhar a forma">
+    <img src="/static/img/drawing.png" /></button>
+  <button id="rollback" type="button" lass="hovertext" style="top: 150px;"
+    data-hover="Clique em 'Z' para reverter ação">
+    <img src="/static/img/desfazer.png" /></button>
+  <button id="save" type="button" lass="hovertext" style="top: 200px;" data-hover="Clique em 'S' para salvar forma">
+    <img src="/static/img/download.png" /></button>
+  <button id="printar" type="button" lass="hovertext" style="top: 250px;"
+    data-hover="Clique em 'P' para printar cooredenadas">
+    <img src="/static/img/debug.png" /></button>
+  <div id="sketch-holder">
+    <!-- You sketch will go here! -->
+  </div>
+</body>
+
 </html>

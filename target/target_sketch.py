@@ -57,6 +57,7 @@ geometrics = list()
 arestas = list()
 list_of_points = list()
 color_picker = None
+file_input = None
 
 def load_points(my_points):
     global points
@@ -70,13 +71,18 @@ def load_points(my_points):
 
 def setup():
     global color_picker
-    createCanvas(1024, 1024)
+    global file_input
+    color_picker = createColorPicker("#F412F0")
+    file_input = createFileInput(loadFile, "true")
+    file_input.position(0, 50)
+    createCanvas(displayWidth-50, displayHeight)
     background(0)
     frameRate(12)
-    color_picker = createColorPicker("#F412F0")
 
 def save_points():
     global geometrics
+    global color_picker
+    global list_of_points
     list_of_points = list()
     for geometric in geometrics:
         points = list()
@@ -84,8 +90,51 @@ def save_points():
             for aresta in geo.export()["arestas"]:
                 points.append(aresta.start)
         list_of_points.append(points)
+    obj = dict()
+    obj["points"] = list_of_points
+    obj["color"] = color_picker.color()["levels"]
+    saveJSON(obj, 'spiral.json', True) 
 
-    return list_of_points  
+def loadFile(file):
+    global list_of_points
+    global color_picker
+    list_of_points = file.data["points"]
+    color_picker = createColorPicker(file.data["color"])
+    for p in list_of_points:
+        load_points(p)
+
+def desenhar():
+    global geometric
+    global geometrics
+    global points
+    global last_points
+    background(0)
+    desenha()
+    last_points = list()
+    geometrics.append(geometric)
+    geometric = list()
+    points = list()
+    last_points = list()
+
+def roll_back():
+    global geometric
+    global geometrics
+    global points
+    global last_points
+    global arestas
+    if len(last_points) > 0:
+        last_points.pop()
+    else:
+        points.pop()
+        geometrics.pop()
+        arestas.pop()
+    background(0)
+
+def printar():
+    global geometrics
+    global arestas
+    print(geometrics)
+    print(arestas)
 
 def keyReleased():
     global geometric
@@ -96,32 +145,14 @@ def keyReleased():
     global arestas
     global list_of_points
     global color_picker
-    if key == 'l':
-        for p in list_of_points:
-            load_points(p)
     if key == 's':
-        s = save_points()
-        list_of_points = s
+        save_points()
     if key == 'p':
-        print(geometrics)
-        print(arestas)
-    if key == 'a':
-        background(0)
-        desenha()
-        last_points = list()
+        printar()
     if key == 'z':
-        if len(last_points) > 0:
-            last_points.pop()
-        else:
-            points.pop()
-            geometrics.pop()
-            arestas.pop()
-        background(0)
+        roll_back()
     if key == 'd':
-        geometrics.append(geometric)
-        geometric = list()
-        points = list()
-        last_points = list()
+        desenhar()
     if key == '-':
         geometrics = list()
         geometric = list()
@@ -155,7 +186,6 @@ def draw():
     if size > 1:
         stroke('red')
         for last in range(size-1):
-            print(last_points)
             line(last_points[last][0], last_points[last][1],
                 last_points[last + 1][0], last_points[last + 1][1])
 
@@ -164,6 +194,8 @@ def mouseClicked():
     global last_points
     px = mouseX
     py = mouseY
+    if px < 0:
+        return
     points.append((px, py))
     last_points.append((px, py))
     
