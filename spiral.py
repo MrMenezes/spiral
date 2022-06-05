@@ -8,6 +8,7 @@ geometric = list()
 geometrics = list()
 arestas = list()
 list_of_points = list()
+color_picker = None
 
 def load_points(my_points):
     global points
@@ -20,9 +21,11 @@ def load_points(my_points):
     points = list()
 
 def setup():
+    global color_picker
     createCanvas(1024, 1024)
-    background(160)
+    background(0)
     frameRate(12)
+    color_picker = createColorPicker("#F412F0")
 
 def save_points():
     global geometrics
@@ -44,6 +47,7 @@ def keyReleased():
     global index
     global arestas
     global list_of_points
+    global color_picker
     if key == 'l':
         for p in list_of_points:
             load_points(p)
@@ -54,7 +58,7 @@ def keyReleased():
         print(geometrics)
         print(arestas)
     if key == 'a':
-        background(160)
+        background(0)
         desenha()
         last_points = list()
     if key == 'z':
@@ -64,7 +68,7 @@ def keyReleased():
             points.pop()
             geometrics.pop()
             arestas.pop()
-        background(160)
+        background(0)
     if key == 'd':
         geometrics.append(geometric)
         geometric = list()
@@ -76,7 +80,7 @@ def keyReleased():
         points = list()
         arestas = list()
         last_points = list()
-        background(160)
+        background(0)
     if key ==0:
         index = 0
     if key ==1:
@@ -92,13 +96,13 @@ def draw():
     global index
     global last_points
     if len(geometrics) > 0:
-        background(160)
+        background(0)
         for geometric in geometrics:
             for geo in geometric:
-                geo.display(stroke, line, index)
+                geo.display(stroke_custom, line, index)
         for aresta in arestas:
             for a in aresta:
-                a.display(stroke, line, 0)
+                a.display(stroke_custom, line, 0)
     size = len(last_points)
     if size > 1:
         stroke('red')
@@ -139,10 +143,14 @@ def desenha():
     
     arestas.append(arestas_draw)
     q1 = GeometricForm(arestas_draw, minimal, tax, points=len(points))
-    q1.display(stroke, line)
+    q1.display(stroke_custom, line)
     try:
         q1.spiral(),
     except StopError:
         pass
     geometric.append(q1)
     last_points = []
+
+def stroke_custom(color):
+    global color_picker
+    stroke(color_picker.color())
