@@ -1,5 +1,6 @@
 from pyp5js import *
 from core import ArestaReta, GeometricForm, StopError
+from grid import GridExtension as Grid
 
 index = None
 points = list()
@@ -10,6 +11,8 @@ arestas = list()
 list_of_points = list()
 color_picker = None
 file_input = None
+extensions = {}
+
 
 def load_points(my_points):
     global points
@@ -24,12 +27,19 @@ def load_points(my_points):
 def setup():
     global color_picker
     global file_input
+    global extensions
+
+    grid = Grid(50, stroke, line)
+    extensions[grid.shortcut] = grid
+
     color_picker = createColorPicker("#F412F0")
     file_input = createFileInput(loadFile, "true")
     file_input.position(0, 50)
     createCanvas(displayWidth-50, displayHeight)
     background(0)
     frameRate(12)
+    for ext in extensions.items():
+        ext[1].setup()
 
 def save_points():
     global geometrics
@@ -97,6 +107,7 @@ def keyReleased():
     global arestas
     global list_of_points
     global color_picker
+    global extensions
     if key == 's':
         save_points()
     if key == 'p':
@@ -122,19 +133,30 @@ def keyReleased():
         index = 3
     if key == 4:
         index = None
+    
+    for ext in extensions.items():
+        if key == ext[1].shortcut:
+            ext[1].run()
        
 def draw():
     global index
     global last_points
+    global extensions
+    background(0)
+
     if len(geometrics) > 0:
-        background(0)
         for geometric in geometrics:
             for geo in geometric:
                 geo.display(stroke_custom, line, index)
         for aresta in arestas:
             for a in aresta:
                 a.display(stroke_custom, line, 0)
+
+    for ext in extensions.items():
+        ext[1].draw()
+
     size = len(last_points)
+
     if size > 0:
         stroke('red')
         ellipse(last_points[0][0], last_points[0][1], 10, 10)
@@ -144,11 +166,20 @@ def draw():
             line(last_points[last][0], last_points[last][1],
                 last_points[last + 1][0], last_points[last + 1][1])
 
+    
+  
+
+
 def mouseClicked():
     global points
     global last_points
+    global extensions
     px = mouseX
     py = mouseY
+
+    gird = extensions["g"]  # grid
+    (px, py) = gird.get_grid(px, py)
+    
     if px < 0:
         return
     points.append((px, py))

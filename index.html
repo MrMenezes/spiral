@@ -19,6 +19,33 @@
     canvas {
       margin: 0px 0px 0px 50px;
     }
+
+    .hovertext {
+      border-bottom: 1px dotted black;
+    }
+
+    .hovertext:before {
+      content: attr(data-hover);
+      visibility: hidden;
+      opacity: 0;
+      width: 140px;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      padding: 5px 0;
+      transition: opacity 1s ease-in-out;
+
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      top: 110%;
+    }
+
+    .hovertext:hover:before {
+      opacity: 1;
+      visibility: visible;
+    }
   </style>
   <style>
     input[type="color" i] {
@@ -92,20 +119,25 @@
 </head>
 
 <body>
-  <button type="button" lass="hovertext" style="top: 50px;" data-hover="Clique em 'L' para carregar forma">
+  <button type="button" class="hovertext" style="top: 50px;" data-hover="Clique em 'L' para carregar forma">
     <img src="./static/img/file.png" />
   </button>
-  <button id="desenhar" type="button" lass="hovertext" style="top: 100px;"
+  <button id="desenhar" type="button" class="hovertext" style="top: 100px;"
     data-hover="Clique em 'D' para desenhar a forma">
     <img src="./static/img/drawing.png" /></button>
-  <button id="rollback" type="button" lass="hovertext" style="top: 150px;"
+  <button id="rollback" type="button" class="hovertext" style="top: 150px;"
     data-hover="Clique em 'Z' para reverter ação">
     <img src="./static/img/desfazer.png" /></button>
-  <button id="save" type="button" lass="hovertext" style="top: 200px;" data-hover="Clique em 'S' para salvar forma">
+  <button id="save" type="button" class="hovertext" style="top: 200px;" data-hover="Clique em 'S' para salvar forma">
     <img src="./static/img/download.png" /></button>
-  <button id="printar" type="button" lass="hovertext" style="top: 250px;"
+  <button id="printar" type="button" class="hovertext" style="top: 250px;"
     data-hover="Clique em 'P' para printar cooredenadas">
     <img src="./static/img/debug.png" /></button>
+
+  <button id="grid" type="button" class="hovertext" style="top: 300px;"
+    data-hover="Clique em 'G' para exibir/remover a grade">
+    <img src="./static/img/grid.png" /></button>
+
   <div id="sketch-holder">
     <!-- You sketch will go here! -->
   </div>

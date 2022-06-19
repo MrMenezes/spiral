@@ -1,0 +1,1 @@
+-e git+ssh://git@github.com/MrMenezes/pyp5js.git@3a2d089bd2c6a755ca4ca386837b50cb59487672#egg=pyp5js
