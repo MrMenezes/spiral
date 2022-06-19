@@ -24,6 +24,10 @@ def load_points(my_points):
     geometric = list()
     points = list()
 
+def extension_run(key):
+    global extensions
+    extensions[key].run()
+
 def setup():
     global color_picker
     global file_input
@@ -134,9 +138,8 @@ def keyReleased():
     if key == 4:
         index = None
     
-    for ext in extensions.items():
-        if key == ext[1].shortcut:
-            ext[1].run()
+    if extensions.get(key) is not None:
+        extensions[key].run()
        
 def draw():
     global index

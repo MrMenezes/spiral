@@ -102,7 +102,7 @@
   <script src="static/p5/p5.min.js"></script>
   <script src="target/target_sketch.js" type="module"></script>
   <script type="module">
-    import { save_points, printar, desenhar, roll_back } from "./target/target_sketch.js";
+    import { save_points, printar, desenhar, roll_back, extension_run } from "./target/target_sketch.js";
     document.getElementById('save').addEventListener('click', function (e) {
       save_points()
     });
@@ -114,6 +114,9 @@
     });
     document.getElementById('desenhar').addEventListener('click', function (e) {
       desenhar()
+    });
+    document.getElementById('grid').addEventListener('click', function (e) {
+      extension_run("g")
     });
   </script>
 </head>
