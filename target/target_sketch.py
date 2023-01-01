@@ -227,7 +227,7 @@ def draw():
             line(last_points[last][0], last_points[last][1],
                 last_points[last + 1][0], last_points[last + 1][1])
 
-    if size == 4:
+    if size > 3:
         if extensions["b"].enable:
             stroke('purple')
             bezier(last_points[last][0], last_points[last][1],
