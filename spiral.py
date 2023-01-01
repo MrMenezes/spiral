@@ -1,12 +1,14 @@
 from pyp5js import *
 from core import ArestaReta, GeometricForm, StopError
 from grid import GridExtension as Grid
+from bezier import BezierExtension as Bezier
 
 index = None
 points = list()
 last_points = list()
 geometric = list()
 geometrics = list()
+beziers = list()
 arestas = list()
 list_of_points = list()
 color_picker = None
@@ -18,6 +20,7 @@ def load_points(my_points):
     global points
     global geometric
     global geometrics
+    global beziers
     points = my_points
     desenha()
     geometrics.append(geometric)
@@ -35,6 +38,9 @@ def setup():
 
     grid = Grid(50, stroke, line)
     extensions[grid.shortcut] = grid
+    
+    bezier = Bezier(desenha_bezier)
+    extensions[bezier.shortcut] = bezier
 
     color_picker = createColorPicker("#F412F0")
     file_input = createFileInput(loadFile, "true")
@@ -161,15 +167,27 @@ def draw():
     size = len(last_points)
 
     if size > 0:
-        stroke('red')
+        stroke("red")
+        if extensions["b"].enable:
+            stroke('blue')
         ellipse(last_points[0][0], last_points[0][1], 10, 10)
     if size > 1:
-        stroke('red')
+        stroke("red")
+        if extensions["b"].enable:
+            stroke('blue')
         for last in range(size-1):
             line(last_points[last][0], last_points[last][1],
                 last_points[last + 1][0], last_points[last + 1][1])
 
-    
+    if size == 4:
+        if extensions["b"].enable:
+            stroke('purple')
+            bezier(last_points[last][0], last_points[last][1],
+                last_points[last + 1][0], last_points[last + 1][1],
+                last_points[last + 2][0], last_points[last + 2][1],
+                last_points[last + 3][0], last_points[last + 3][1])
+
+
   
 
 
@@ -188,6 +206,42 @@ def mouseClicked():
     points.append((px, py))
     last_points.append((px, py))
     
+
+
+def desenha_bezier():
+    global points
+    global geometric
+    global arestas
+    global last_points
+    minimal = 10
+    tax = 0.1
+    arestas_draw = list()
+    x = points[0][0]
+    y = points[0][1]
+    dist = (x, y)
+    if len(points) < 3:
+        return
+    bezier( x1, y1, x2, y2, x3, y3, x4, y4 )
+
+    for key, value in enumerate(points):
+        if key + 1 > len(points) - 1:
+            dist_t = (x, y)
+        else:
+            dist_t = (points[key+1][0], points[key+1][1])
+        ares = ArestaReta(dist, dist_t, minimal, tax)
+        arestas_draw.append(ares)
+        dist = dist_t
+    
+    arestas.append(arestas_draw)
+    q1 = GeometricForm(arestas_draw, minimal, tax, points=len(points))
+    q1.display(stroke_custom, line)
+    try:
+        q1.spiral(),
+    except StopError:
+        pass
+    geometric.append(q1)
+    last_points = list()
+
 
 
 def desenha():

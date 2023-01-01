@@ -118,6 +118,10 @@
     document.getElementById('grid').addEventListener('click', function (e) {
       extension_run("g")
     });
+    
+    document.getElementById('bezier').addEventListener('click', function (e) {
+      extension_run("b")
+    });
   </script>
 </head>
 
@@ -141,6 +145,9 @@
     data-hover="Clique em 'G' para exibir/remover a grade">
     <img src="./static/img/grid.png" /></button>
 
+    <button id="bezier" type="button" class="hovertext" style="top: 350px;"
+    data-hover="Clique em 'B' para ativar o bezier">
+    <img src="./static/img/drawing.png" /></button>
   <div id="sketch-holder">
     <!-- You sketch will go here! -->
   </div>
