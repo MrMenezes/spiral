@@ -62,6 +62,7 @@ list_of_points = list()
 color_picker = None
 file_input = None
 extensions = {}
+curvature = 10
 
 
 def load_points(my_points):
@@ -166,6 +167,11 @@ def keyReleased():
     global list_of_points
     global color_picker
     global extensions
+    global curvature
+    if key == '+':
+        curvature = curvature +10
+    if key == '-':
+        curvature = curvature -10
     if key == 's':
         save_points()
     if key == 'p':
@@ -174,7 +180,7 @@ def keyReleased():
         roll_back()
     if key == 'd':
         desenhar()
-    if key == '-':
+    if key == '*':
         geometrics = list()
         geometric = list()
         points = list()
@@ -194,7 +200,23 @@ def keyReleased():
     
     if extensions.get(key) is not None:
         extensions[key].run()
-       
+
+def curve(x1,x2,x3,x4):
+    noFill()
+    #bezier(x1, x2, x1+x2/2, x1+x2/2, x3+x4/2, x3+x4/2, x3, x4)
+    beginShape()
+    curveVertex(x1, x2)
+    curveVertex(x1, x2)
+    curveVertex((x1+x3)/2, )
+    curveVertex(x3, x4)
+    curveVertex(x3, x4)
+    endShape()
+
+def bezierCurve(x1,x2,x3,x4):
+    global curvature
+    noFill()
+    bezier(x1, x2, ((x1+x3)/2) + curvature, ((x2+x4)/2) + curvature, ((x1+x3)/2) + curvature, ((x2+x4)/2) + curvature, x3, x4)
+
 def draw():
     global index
     global last_points
@@ -204,10 +226,19 @@ def draw():
     if len(geometrics) > 0:
         for geometric in geometrics:
             for geo in geometric:
-                geo.display(stroke_custom, line, index)
+                if extensions["b"].enable:
+                    geo.display(stroke_custom, bezierCurve, index)
+                else:
+                    geo.display(stroke_custom, line, index)
         for aresta in arestas:
             for a in aresta:
-                a.display(stroke_custom, line, 0)
+                if extensions["b"].enable:
+                    a.display(stroke_custom, bezierCurve, 0)
+                else:
+                    a.display(stroke_custom, line, 0) 
+                
+                
+            
 
     for ext in extensions.items():
         ext[1].draw()
@@ -225,15 +256,8 @@ def draw():
             stroke('blue')
         for last in range(size-1):
             line(last_points[last][0], last_points[last][1],
-                last_points[last + 1][0], last_points[last + 1][1])
-
-    if size > 3:
-        if extensions["b"].enable:
-            stroke('purple')
-            bezier(last_points[last][0], last_points[last][1],
-                last_points[last + 1][0], last_points[last + 1][1],
-                last_points[last + 2][0], last_points[last + 2][1],
-                last_points[last + 3][0], last_points[last + 3][1])
+                last_points[last + 1][0], last_points[last + 1][1])           
+            
 
 
   

@@ -22,4 +22,4 @@ class BezierExtension():
 
     def run(self):
         self.enable = not self.enable
-        self.run_func()
+        # self.run_func()
