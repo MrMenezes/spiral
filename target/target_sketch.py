@@ -62,7 +62,7 @@ list_of_points = list()
 color_picker = None
 file_input = None
 extensions = {}
-curvature = 10
+curvature = 0.75
 
 
 def load_points(my_points):
@@ -169,9 +169,9 @@ def keyReleased():
     global extensions
     global curvature
     if key == '+':
-        curvature = curvature +10
+        curvature = curvature +0.25
     if key == '-':
-        curvature = curvature -10
+        curvature = curvature -0.25
     if key == 's':
         save_points()
     if key == 'p':
@@ -212,10 +212,17 @@ def curve(x1,x2,x3,x4):
     curveVertex(x3, x4)
     endShape()
 
-def bezierCurve(x1,x2,x3,x4):
+def bezierCurve(x1,y1,x2,y2):
     global curvature
     noFill()
-    bezier(x1, x2, ((x1+x3)/2) + curvature, ((x2+x4)/2) + curvature, ((x1+x3)/2) + curvature, ((x2+x4)/2) + curvature, x3, x4)
+    if y2-y1/x2-x1 > 0:
+        d = x2 + ((x1-x2) * curvature)
+        v = y1 + ((y2-y1) * curvature)
+    else:
+        d = x1 + ((x2-x1) * curvature)
+        v = y2 + ((y1-y2) * curvature)
+
+    bezier(x1, y1, d, v, d, v, x2, y2)
 
 def draw():
     global index
