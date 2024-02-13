@@ -59,7 +59,7 @@ def save_points():
     obj = dict()
     obj["points"] = list_of_points
     obj["color"] = color_picker.color()["levels"]
-    saveJSON(obj, 'spiral.json', True) 
+    saveJSON(obj, 'spiral.json', True)  
 
 def loadFile(file):
     global list_of_points
@@ -112,6 +112,8 @@ def keyReleased():
     global list_of_points
     global color_picker
     global extensions
+    if key == 'f':
+        save("spiral.png")
     if key == 's':
         save_points()
     if key == 'p':

@@ -242,6 +242,9 @@ var keyReleased = function () {
 	}
 	else {
 	}
+	if (key == 'f') {
+		save("spiral.png");
+	}
 	if (key == 's') {
 		save_points ();
 	}
